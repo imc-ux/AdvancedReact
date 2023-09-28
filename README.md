@@ -14,7 +14,7 @@
 [![mini/css/extract/plugin v2.6.1](https://img.shields.io/badge/mini/css/extract/plugin-v2.6.1-e1a6a2.svg)](https://webpack.js.org/plugins/mini-css-extract-plugin/#root)
 
 ## What is it?
-**AdvancedReact** 包含了在线转换工具、权限管理页面和角色管理页面。
+**AdvancedReact** 包含了在线转换工具、权限管理页面、角色管理页面和技术分享页面。
 ## Table of Contents
 - [Technologies](#Technologies)
 - [Development](#Development)
@@ -54,7 +54,8 @@ git push -u origin main
 本地访问路径：<br>
 在线转换工具：[http://127.0.0.1:8080/cusys/react/index.html?#/main](http://127.0.0.1:8080/cusys/react/index.html?#/main)<br>
 权限管理：[http://127.0.0.1:8080/cusys/react/index.html?#/permission](http://127.0.0.1:8080/cusys/react/index.html?#/permission)<br>
-角色管理：[http://127.0.0.1:8080/cusys/react/index.html?#/role](http://127.0.0.1:8080/cusys/react/index.html?#/role)
+角色管理：[http://127.0.0.1:8080/cusys/react/index.html?#/role](http://127.0.0.1:8080/cusys/react/index.html?#/role)<br>
+技术分享：[http://127.0.0.1:8080/cusys/react/index.html?#/share](http://127.0.0.1:8080/cusys/react/index.html?#/share)
 ## Production
 ```sh
 npm run build
