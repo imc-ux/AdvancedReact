@@ -339,6 +339,12 @@ export default function UnicodeConverter() {
         type={InputType.HN}
         onTextAreaChanged={onCommonTextChangedHandler}
       />
+      <CustomTextArea
+        title="GB2312 ( Example: &#x26;quot; )"
+        data={htmlNameCodeText}
+        type={InputType.HN}
+        onTextAreaChanged={onCommonTextChangedHandler}
+      />
     </div>
   );
 }
