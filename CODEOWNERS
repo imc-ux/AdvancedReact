@@ -16,6 +16,7 @@
 # In this example, @octocat owns any file in an apps directory
 # anywhere in your repository.
 css/  @bloossom 
+CODEOWNERS   @ythyhvh
 
 # ###############以下是例子，不生效
 
