@@ -66,7 +66,7 @@ module.exports = {
         ],
       },
       {
-        test: /\.jsx?/i,
+        test: /\.jsx?$/i,
         use: ['babel-loader'],
       },
       {
