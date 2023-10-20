@@ -1,4 +1,8 @@
 import { htmlStringObj } from '@/util/htmlNameCode';
+import iconv from 'iconv-lite';
+// var iconv = require('iconv-lite');
+
+type GBCharset = 'GB2312' | 'GBK' | 'GB18030';
 
 /**
  * 判断输入是否为空
@@ -73,8 +77,8 @@ export function stringToUTF8(data: string, removeFlag: boolean = false): string 
   for (let i = 0; i < inputData.length; i++) {
     const code = inputData.codePointAt(i);
     const str = String.fromCodePoint(code);
-    const unit8Array = encoder.encode(str);
-    unit8Array.forEach((item) => {
+    const uint8Array = encoder.encode(str);
+    uint8Array.forEach((item) => {
       utf8String += removeFlag ? item.toString(16) : `\\x${item.toString(16)}`;
     });
     if (code > 0xffff) {
@@ -469,4 +473,56 @@ export function htmlNameCodeToDecString(data: string): string {
     }
   });
   return decString.trim();
+}
+
+export function stringToGBEncode(data: string, charSet: GBCharset, removeFlag?: boolean): string {
+  if (isEmpty(data)) {
+    return;
+  }
+  const strArr = data.split('');
+  let returnStr = '';
+  strArr.forEach((item) => {
+    const uint8Array = iconv.encode(item, charSet);
+    let singleCharCode = '';
+    uint8Array.forEach((elem) => {
+      let hexStr = elem.toString(16);
+      if (charSet === 'GB2312' || charSet === 'GBK') {
+        if (item !== '?' && elem === 63) {
+          hexStr = '?';
+        }
+      }
+      singleCharCode += hexStr;
+    });
+    returnStr += singleCharCode !== '?' ? `\\x${singleCharCode}` : '?';
+  });
+  return returnStr;
+}
+
+export function GBCodeToString(data: string, charSet: GBCharset): string {
+  if (isEmpty(data)) {
+    return '';
+  }
+  let hexStr = data;
+  if (data.indexOf('\\x') >= 0) {
+    hexStr = data.replace(/\\x/g, '');
+  }
+  const reg = /[^0-9a-fA-F]/g;
+  if (reg.test(hexStr)) {
+    return '';
+  }
+  if (hexStr.length % 2 !== 0) {
+    return '';
+  }
+  const uint8Arr = [];
+  for (let i = 0; i < hexStr.length; i += 2) {
+    uint8Arr.push(Number(Number(`0x${hexStr.substring(i, i + 2)}`).toString(10)));
+  }
+  const uint8Array = new Uint8Array(uint8Arr);
+  console.log('u8a', uint8Array);
+  const decoder = new TextDecoder(charSet.toLowerCase());
+  try {
+    return decoder.decode(uint8Array);
+  } catch (error) {
+    return '';
+  }
 }
