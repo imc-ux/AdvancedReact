@@ -1,0 +1,45 @@
+name: "💡 Feature request"
+description: Create a report to help us improve
+title: "[页面名称]: "
+labels: ["💡 Feature Request"]
+projects: []
+assignees:
+  - wind-in-wind, ythyhvh, kimcy99
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to request this feature! 
+  - type: textarea
+    id: feat-description
+    attributes:
+      label: Describe the problem
+      description: Please provide a clear and concise description the problem this feature would solve. The more information you can provide here, the better.
+    validations:
+      required: true 
+  - type: textarea
+    id: solution
+    attributes:
+      label: Describe the proposed solution
+      description: Please provide a clear and concise description of what you would like to happen.
+      placeholder: 
+    validations:
+      required: true
+  - type: textarea
+    id: feat-screenshot
+    attributes:
+      label: Screenshot
+      description: 
+    validations:
+      required: false 
+  - type: dropdown
+    id: importance
+    attributes:
+      label: Importance
+      description: How important is this feature to you?
+      options:
+        - nice to have
+        - would make my life easier
+        - i cannot use system without it
+    validations:
+      required: true
