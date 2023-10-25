@@ -17,6 +17,7 @@
 # anywhere in your repository.
 css/  @bloossom 
 CODEOWNERS   @ythyhvh
+*.yml   @ythyhvh
 
 # ###############以下是例子，不生效
 
