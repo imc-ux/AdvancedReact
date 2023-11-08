@@ -1,3 +1,8 @@
+## [1.0.1](https://github.com/imc-ux/AdvancedReact/releases/tag/v1.0.1) (2023-10-30)
+### Features
+-#10
+-#7
+
 ## [1.0.0](https://github.com/imc-ux/AdvancedReact/releases/tag/v1.0.0) (2023-09-21)
 ### Features
 - 在线转换工具
