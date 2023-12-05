@@ -4,7 +4,7 @@ title: "[页面名称]: "
 labels: ["🐛 Bug"]
 projects: []
 assignees:
-  - kimcy99, Generalizations
+  - Generalizations
 body:
   - type: markdown
     attributes:
