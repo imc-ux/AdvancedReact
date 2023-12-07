@@ -1,7 +1,7 @@
 import TextArea from 'antd/lib/input/TextArea';
 import React, { useEffect, useRef, useState } from 'react';
-import { Checkbox, Typography, Button, notification } from 'antd';
-import { SmileOutlined } from '@ant-design/icons';
+import { Checkbox, Typography, notification, Row, Col } from 'antd';
+import { SmileOutlined, CopyTwoTone, DeleteTwoTone } from '@ant-design/icons';
 import {
   base64ToString,
   decimalToString,
@@ -351,89 +351,92 @@ export default function UnicodeConverter() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'auto' }}>
-      <CustomTextArea title="Text ( Example: र Ю )" data={commonText} type={InputType.C} onTextAreaChanged={onCommonTextChangedHandler} />
-      <CustomTextArea
-        title="Unicode ( Example: u+930u+20u+42eu+22 )"
-        data={unicodeText}
-        type={InputType.UC}
-        ristrict={/[^a-fA-F0-9u+]/g}
-        key={refresh}
-        onTextAreaChanged={onCommonTextChangedHandler}
-      />
-      <CustomTextArea
-        title="UTF-8 ( Example: \xe0\xa4\xb0\x20\xd0\xae\x22 )"
-        showCheckbox={true}
-        checkboxLabel="Remove notation ( \x )"
-        data={utf8HexText}
-        type={InputType.U8H}
-        ristrict={/[^a-fA-F0-9x\\]/g}
-        onTextAreaChanged={onCommonTextChangedHandler}
-        onCheckboxChanged={onCheckboxChangedHandler}
-      />
-      <CustomTextArea
-        title="UTF-16 ( Example: \u0930\u0020\u042e\u0022 )"
-        showCheckbox={true}
-        checkboxLabel="Remove notation ( \u )"
-        data={utf16Text}
-        type={InputType.U16}
-        ristrict={/[^a-fA-F0-9u\\]/g}
-        onTextAreaChanged={onCommonTextChangedHandler}
-        onCheckboxChanged={onCheckboxChangedHandler}
-      />
-      <CustomTextArea
-        title="UTF-32 ( Example: u+00000930u+00000020u+0000042eu+00000022 )"
-        showCheckbox={true}
-        checkboxLabel="Remove notation ( u+ )"
-        data={utf32Text}
-        type={InputType.U32}
-        ristrict={/[^a-fA-F0-9u+]/g}
-        onTextAreaChanged={onCommonTextChangedHandler}
-        onCheckboxChanged={onCheckboxChangedHandler}
-      />
-      <CustomTextArea
-        title="Base64 ( Example: 4KSwINCuIg== )"
-        data={base64Text}
-        type={InputType.B64}
-        onTextAreaChanged={onCommonTextChangedHandler}
-      />
-      <CustomTextArea
-        title="URL(%) ( Example: %E0%A4%B0%20%D0%AE%22 )"
-        data={urlText}
-        type={InputType.URL}
-        onTextAreaChanged={onCommonTextChangedHandler}
-      />
-      <CustomTextArea
-        title="Decimal ( Example: 2352 32 1070 34 )"
-        data={decimalText}
-        type={InputType.DEC}
-        ristrict={/[^0-9\s]/g}
-        onTextAreaChanged={onCommonTextChangedHandler}
-      />
-      <CustomTextArea
-        title="HTML Code ( Example: &#x26;#2352;&#x26;#32;&#x26;#1070;&#x26;#34; )"
-        data={htmlCodeText}
-        type={InputType.HC}
-        onTextAreaChanged={onCommonTextChangedHandler}
-      />
-      <CustomTextArea
-        title="Html Name Code ( Example: &#x26;quot; )"
-        data={htmlNameCodeText}
-        type={InputType.HN}
-        onTextAreaChanged={onCommonTextChangedHandler}
-      />
-      <CustomTextArea
-        title="GB2312 ( Example: ?\x20\xa7c0 )"
-        data={gb2312CodeText}
-        type={InputType.GB4}
-        onTextAreaChanged={onCommonTextChangedHandler}
-      />
-      <CustomTextArea title="GBK ( Example: ?\x20\xa7c0 )" data={gbkCodeText} type={InputType.GBK} onTextAreaChanged={onCommonTextChangedHandler} />
-      <CustomTextArea
-        title="GB18130 ( Example: \x8131d136\x20\xa7c0 )"
-        data={gb18130CodeText}
-        type={InputType.GB5}
-        onTextAreaChanged={onCommonTextChangedHandler}
-      />
+      <Row
+        gutter={[
+          { xxl: 32, lg: 24 },
+          { xxl: 32, lg: 24 },
+        ]}
+      >
+        <Col xxl={8} lg={12}>
+          <CustomTextArea title="Text ( Example: र Ю )" data={commonText} type={InputType.C} onTextAreaChanged={onCommonTextChangedHandler} />
+        </Col>
+        <Col xxl={8} lg={12}>
+          <CustomTextArea
+            title="Unicode"
+            data={unicodeText}
+            type={InputType.UC}
+            ristrict={/[^a-fA-F0-9u+]/g}
+            key={refresh}
+            onTextAreaChanged={onCommonTextChangedHandler}
+          />
+        </Col>
+        <Col xxl={8} lg={12} className="gutter-row">
+          <CustomTextArea
+            title="UTF-8"
+            showCheckbox={true}
+            checkboxLabel="Remove notation ( \x )"
+            data={utf8HexText}
+            type={InputType.U8H}
+            ristrict={/[^a-fA-F0-9x\\]/g}
+            onTextAreaChanged={onCommonTextChangedHandler}
+            onCheckboxChanged={onCheckboxChangedHandler}
+          />
+        </Col>
+        <Col xxl={8} lg={12}>
+          <CustomTextArea
+            title="UTF-16"
+            showCheckbox={true}
+            checkboxLabel="Remove notation ( \u )"
+            data={utf16Text}
+            type={InputType.U16}
+            ristrict={/[^a-fA-F0-9u\\]/g}
+            onTextAreaChanged={onCommonTextChangedHandler}
+            onCheckboxChanged={onCheckboxChangedHandler}
+          />
+        </Col>
+        <Col xxl={8} lg={12}>
+          <CustomTextArea
+            title="UTF-32"
+            showCheckbox={true}
+            checkboxLabel="Remove notation ( u+ )"
+            data={utf32Text}
+            type={InputType.U32}
+            ristrict={/[^a-fA-F0-9u+]/g}
+            onTextAreaChanged={onCommonTextChangedHandler}
+            onCheckboxChanged={onCheckboxChangedHandler}
+          />
+        </Col>
+        {/* <Col xxl={8} lg={12}>
+          <CustomTextArea title="Base64" data={base64Text} type={InputType.B64} onTextAreaChanged={onCommonTextChangedHandler} />
+        </Col> */}
+        <Col xxl={8} lg={12}>
+          <CustomTextArea title="URL(%)" data={urlText} type={InputType.URL} onTextAreaChanged={onCommonTextChangedHandler} />
+        </Col>
+        <Col xxl={8} lg={12}>
+          <CustomTextArea
+            title="Decimal"
+            data={decimalText}
+            type={InputType.DEC}
+            ristrict={/[^0-9\s]/g}
+            onTextAreaChanged={onCommonTextChangedHandler}
+          />
+        </Col>
+        <Col xxl={8} lg={12}>
+          <CustomTextArea title="HTML Code" data={htmlCodeText} type={InputType.HC} onTextAreaChanged={onCommonTextChangedHandler} />
+        </Col>
+        <Col xxl={8} lg={12}>
+          <CustomTextArea title="Html Name Code" data={htmlNameCodeText} type={InputType.HN} onTextAreaChanged={onCommonTextChangedHandler} />
+        </Col>
+        <Col xxl={8} lg={12}>
+          <CustomTextArea title="GB2312" data={gb2312CodeText} type={InputType.GB4} onTextAreaChanged={onCommonTextChangedHandler} />
+        </Col>
+        <Col xxl={8} lg={12}>
+          <CustomTextArea title="GBK" data={gbkCodeText} type={InputType.GBK} onTextAreaChanged={onCommonTextChangedHandler} />
+        </Col>
+        <Col xxl={8} lg={12}>
+          <CustomTextArea title="GB18130" data={gb18130CodeText} type={InputType.GB5} onTextAreaChanged={onCommonTextChangedHandler} />
+        </Col>
+      </Row>
     </div>
   );
 }
@@ -441,6 +444,7 @@ export default function UnicodeConverter() {
 interface CustomTextAreaProps {
   data: string;
   type: InputType;
+  rows?: number;
   title: string;
   checkboxLabel?: string;
   showCheckbox?: boolean;
@@ -451,10 +455,11 @@ interface CustomTextAreaProps {
 
 function CustomTextArea(props: CustomTextAreaProps) {
   const [value, setValue] = useState(props.data);
+  const [showIcon, setShowIcon] = useState(false);
 
   const [api, contextHolder] = notification.useNotification();
 
-  const { title = '', checkboxLabel = '', showCheckbox = false, type } = props;
+  const { title = '', checkboxLabel = '', showCheckbox = false, type, rows = 3 } = props;
 
   let placeholderText = '在这里输入字符';
 
@@ -486,6 +491,14 @@ function CustomTextArea(props: CustomTextAreaProps) {
   function onTextAreaBlurHandler(event) {
     if (event.target.value !== props.data || !event.target.value) {
       props.onTextAreaChanged(event.target.value, props.type);
+    }
+  }
+
+  function onTextAreaHoverHandler(type: string) {
+    if (type === 'in') {
+      setShowIcon(true);
+    } else {
+      setShowIcon(false);
     }
   }
 
@@ -525,14 +538,14 @@ function CustomTextArea(props: CustomTextAreaProps) {
         <Title level={5}>{title}</Title>
         {showCheckbox && <Checkbox onChange={onChange}>{checkboxLabel}</Checkbox>}
       </div>
-      <TextArea value={value} onChange={onTextAreaChangeHandler} onBlur={onTextAreaBlurHandler} placeholder={placeholderText} />
-      <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginTop: '5px' }}>
-        <Button type="primary" shape="round" size="small" onClick={onCopyBtnClickHandler}>
-          copy
-        </Button>
-        <Button style={{ marginLeft: '5px' }} type="primary" shape="round" size="small" onClick={onClearBtnClickHandler}>
-          clear
-        </Button>
+      <div style={{ position: 'relative' }} onMouseEnter={() => onTextAreaHoverHandler('in')} onMouseLeave={() => onTextAreaHoverHandler('out')}>
+        <TextArea value={value} rows={rows} onChange={onTextAreaChangeHandler} onBlur={onTextAreaBlurHandler} placeholder={placeholderText} />
+        {showIcon && (
+          <div style={{ position: 'absolute', top: 5, right: 5, backgroundColor: 'white' }}>
+            <CopyTwoTone twoToneColor="#1a8c16" onClick={onCopyBtnClickHandler} title="copy" />
+            <DeleteTwoTone twoToneColor="#1a8c16" style={{ marginLeft: '5px' }} title="clear" onClick={onClearBtnClickHandler} />
+          </div>
+        )}
       </div>
     </div>
   );
