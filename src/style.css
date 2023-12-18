@@ -1121,8 +1121,16 @@ img {
   margin-right: 5px !important;
 }
 
+.margin-l5 {
+  margin-left: 5px !important;
+}
+
 .margin-r10 {
   margin-right: 10px !important;
+}
+
+.margin-t5 {
+  margin-top: 5px !important;
 }
 
 .margin-t10 {
@@ -1173,4 +1181,20 @@ img {
 
 .cursor-link {
   cursor: pointer;
+}
+
+/* 二维码转换 */
+.wrap-grid {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+}
+
+.subitem-bg {
+  background-color: #f2f2f2;
+  padding: 10px;
+  border: 1px solid #bebebe;
+}
+
+.colorbox-shadow {
+  box-shadow: rgb(155 155 155 / 50%) 1px 2px 3px;
 }

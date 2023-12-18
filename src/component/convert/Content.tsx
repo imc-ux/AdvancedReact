@@ -5,6 +5,7 @@ import SHA from './fragments/SHA-256';
 import Base64 from './fragments/Base64';
 import JSON from './fragments/JSON';
 import UnicodeConverter from './fragments/UnicodeConverter';
+import QRCodeGenerator from './fragments/QRCodeGenerator';
 
 interface IContentProps {
   id?: number;
@@ -26,6 +27,8 @@ export default function Content(props: IContentProps) {
       return <JSON />;
     } else if (id === 7) {
       return <UnicodeConverter />;
+    } else if (id === 8) {
+      return <QRCodeGenerator />;
     }
   }
 

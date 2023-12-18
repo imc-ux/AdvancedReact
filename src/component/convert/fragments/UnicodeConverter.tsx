@@ -6,12 +6,10 @@ import {
   base64ToString,
   decimalToString,
   decNumberToHTMLNameCode,
-  GBCodeToString,
   htmlCodeToString,
   htmlNameCodeToDecString,
   stringToBase64,
   stringToDecimal,
-  stringToGBEncode,
   stringToHTMLCode,
   stringToUnicode,
   stringToURLCode,
@@ -24,7 +22,6 @@ import {
   utf32ToString,
   uTF8ToString,
 } from './helper/UnicodeHelper';
-import iconv from 'iconv-lite';
 
 const { Title } = Typography;
 
@@ -40,9 +37,6 @@ enum InputType {
   DEC = 'Decimal',
   HC = 'Html Code',
   HN = 'Html Name Code',
-  GB4 = 'GB2312',
-  GBK = 'GBK',
-  GB5 = 'GB18130',
 }
 
 export default function UnicodeConverter() {
@@ -63,9 +57,6 @@ export default function UnicodeConverter() {
   let decimalText = '';
   let htmlCodeText = '';
   let htmlNameCodeText = '';
-  let gb2312CodeText = '';
-  let gbkCodeText = '';
-  let gb18130CodeText = '';
 
   switch (inputTypeRef.current) {
     case InputType.UC:
@@ -95,11 +86,6 @@ export default function UnicodeConverter() {
     case InputType.HN:
       htmlNameCodeConverter();
       break;
-    case InputType.GB4:
-    case InputType.GBK:
-    case InputType.GB5:
-      gbCodeConverter();
-      break;
     default:
       commonTextConvert();
       break;
@@ -116,9 +102,6 @@ export default function UnicodeConverter() {
     decimalText = stringToDecimal(commonText);
     htmlCodeText = stringToHTMLCode(commonText);
     htmlNameCodeText = decNumberToHTMLNameCode(decimalText);
-    gb2312CodeText = stringToGBEncode(commonText, 'GB2312');
-    gbkCodeText = stringToGBEncode(commonText, 'GBK');
-    gb18130CodeText = stringToGBEncode(commonText, 'GB18030');
   }
 
   function utf8Converter() {
@@ -132,9 +115,6 @@ export default function UnicodeConverter() {
     decimalText = stringToDecimal(commonText);
     htmlCodeText = stringToHTMLCode(commonText);
     htmlNameCodeText = decNumberToHTMLNameCode(decimalText);
-    gb2312CodeText = stringToGBEncode(commonText, 'GB2312');
-    gbkCodeText = stringToGBEncode(commonText, 'GBK');
-    gb18130CodeText = stringToGBEncode(commonText, 'GB18030');
   }
 
   function utf16Converter() {
@@ -148,9 +128,6 @@ export default function UnicodeConverter() {
     decimalText = stringToDecimal(commonText);
     htmlCodeText = stringToHTMLCode(commonText);
     htmlNameCodeText = decNumberToHTMLNameCode(decimalText);
-    gb2312CodeText = stringToGBEncode(commonText, 'GB2312');
-    gbkCodeText = stringToGBEncode(commonText, 'GBK');
-    gb18130CodeText = stringToGBEncode(commonText, 'GB18030');
   }
 
   function utf32Converter() {
@@ -164,9 +141,6 @@ export default function UnicodeConverter() {
     decimalText = stringToDecimal(commonText);
     htmlCodeText = stringToHTMLCode(commonText);
     htmlNameCodeText = decNumberToHTMLNameCode(decimalText);
-    gb2312CodeText = stringToGBEncode(commonText, 'GB2312');
-    gbkCodeText = stringToGBEncode(commonText, 'GBK');
-    gb18130CodeText = stringToGBEncode(commonText, 'GB18030');
   }
 
   function base64Converter() {
@@ -180,9 +154,6 @@ export default function UnicodeConverter() {
     decimalText = stringToDecimal(commonText);
     htmlCodeText = stringToHTMLCode(commonText);
     htmlNameCodeText = decNumberToHTMLNameCode(decimalText);
-    gb2312CodeText = stringToGBEncode(commonText, 'GB2312');
-    gbkCodeText = stringToGBEncode(commonText, 'GBK');
-    gb18130CodeText = stringToGBEncode(commonText, 'GB18030');
   }
 
   function urlConverter() {
@@ -196,9 +167,6 @@ export default function UnicodeConverter() {
     decimalText = stringToDecimal(commonText);
     htmlCodeText = stringToHTMLCode(commonText);
     htmlNameCodeText = decNumberToHTMLNameCode(decimalText);
-    gb2312CodeText = stringToGBEncode(commonText, 'GB2312');
-    gbkCodeText = stringToGBEncode(commonText, 'GBK');
-    gb18130CodeText = stringToGBEncode(commonText, 'GB18030');
   }
 
   function decConverter() {
@@ -212,9 +180,6 @@ export default function UnicodeConverter() {
     urlText = stringToURLCode(commonText);
     htmlCodeText = stringToHTMLCode(commonText);
     htmlNameCodeText = decNumberToHTMLNameCode(inputValue);
-    gb2312CodeText = stringToGBEncode(commonText, 'GB2312');
-    gbkCodeText = stringToGBEncode(commonText, 'GBK');
-    gb18130CodeText = stringToGBEncode(commonText, 'GB18030');
   }
 
   function htmlCodeConverter() {
@@ -228,9 +193,6 @@ export default function UnicodeConverter() {
     urlText = stringToURLCode(commonText);
     decimalText = stringToDecimal(commonText);
     htmlNameCodeText = decNumberToHTMLNameCode(decimalText);
-    gb2312CodeText = stringToGBEncode(commonText, 'GB2312');
-    gbkCodeText = stringToGBEncode(commonText, 'GBK');
-    gb18130CodeText = stringToGBEncode(commonText, 'GB18030');
   }
 
   function htmlNameCodeConverter() {
@@ -244,47 +206,6 @@ export default function UnicodeConverter() {
     base64Text = stringToBase64(commonText);
     urlText = stringToURLCode(commonText);
     htmlCodeText = stringToHTMLCode(commonText);
-    gb2312CodeText = stringToGBEncode(commonText, 'GB2312');
-    gbkCodeText = stringToGBEncode(commonText, 'GBK');
-    gb18130CodeText = stringToGBEncode(commonText, 'GB18030');
-  }
-
-  function gbCodeConverter() {
-    switch (inputTypeRef.current) {
-      case InputType.GB4:
-        {
-          gb2312CodeText = inputValue;
-          commonText = GBCodeToString(inputValue, 'GB2312');
-          gbkCodeText = stringToGBEncode(commonText, 'GBK');
-          gb18130CodeText = stringToGBEncode(commonText, 'GB18030');
-        }
-        break;
-      case InputType.GBK:
-        {
-          gbkCodeText = inputValue;
-          commonText = GBCodeToString(inputValue, 'GBK');
-          gb2312CodeText = stringToGBEncode(commonText, 'GB2312');
-          gb18130CodeText = stringToGBEncode(commonText, 'GB18030');
-        }
-        break;
-      case InputType.GB5:
-        {
-          gb18130CodeText = inputValue;
-          commonText = GBCodeToString(inputValue, 'GB18030');
-          gb2312CodeText = stringToGBEncode(commonText, 'GB2312');
-          gbkCodeText = stringToGBEncode(commonText, 'GBK');
-        }
-        break;
-    }
-    unicodeText = stringToUnicode(commonText);
-    utf8HexText = stringToUTF8(commonText, u8RemoveFlag.current);
-    utf16Text = stringToUTF16(commonText, u16RemoveFlag.current);
-    utf32Text = stringToUTF32(commonText, u32RemoveFlag.current);
-    base64Text = stringToBase64(commonText);
-    urlText = stringToURLCode(commonText);
-    decimalText = stringToDecimal(commonText);
-    htmlCodeText = stringToHTMLCode(commonText);
-    htmlNameCodeText = decNumberToHTMLNameCode(decimalText);
   }
 
   function commonTextConvert() {
@@ -298,9 +219,6 @@ export default function UnicodeConverter() {
     decimalText = stringToDecimal(inputValue);
     htmlCodeText = stringToHTMLCode(inputValue);
     htmlNameCodeText = decNumberToHTMLNameCode(decimalText);
-    gb2312CodeText = stringToGBEncode(inputValue, 'GB2312');
-    gbkCodeText = stringToGBEncode(inputValue, 'GBK');
-    gb18130CodeText = stringToGBEncode(inputValue, 'GB18030');
   }
 
   function onCommonTextChangedHandler(data: string, type: InputType) {
@@ -351,7 +269,7 @@ export default function UnicodeConverter() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'auto' }}>
-      <CustomTextArea title="Text ( Example: र Ю )" data={commonText} type={InputType.C} onTextAreaChanged={onCommonTextChangedHandler} />
+      <CustomTextArea title='Text ( Example: र Ю" )' data={commonText} type={InputType.C} onTextAreaChanged={onCommonTextChangedHandler} />
       <CustomTextArea
         title="Unicode ( Example: u+930u+20u+42eu+22 )"
         data={unicodeText}
@@ -419,19 +337,6 @@ export default function UnicodeConverter() {
         title="Html Name Code ( Example: &#x26;quot; )"
         data={htmlNameCodeText}
         type={InputType.HN}
-        onTextAreaChanged={onCommonTextChangedHandler}
-      />
-      <CustomTextArea
-        title="GB2312 ( Example: ?\x20\xa7c0 )"
-        data={gb2312CodeText}
-        type={InputType.GB4}
-        onTextAreaChanged={onCommonTextChangedHandler}
-      />
-      <CustomTextArea title="GBK ( Example: ?\x20\xa7c0 )" data={gbkCodeText} type={InputType.GBK} onTextAreaChanged={onCommonTextChangedHandler} />
-      <CustomTextArea
-        title="GB18130 ( Example: \x8131d136\x20\xa7c0 )"
-        data={gb18130CodeText}
-        type={InputType.GB5}
         onTextAreaChanged={onCommonTextChangedHandler}
       />
     </div>
