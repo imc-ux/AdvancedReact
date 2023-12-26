@@ -202,6 +202,7 @@ body {
   display: flex;
   padding: 0px;
 }
+
 .h-left {
   justify-content: flex-start;
 }
@@ -1149,6 +1150,10 @@ img {
   margin-bottom: 10px;
 }
 
+.fontSize12 {
+  font-size: 12px;
+}
+
 .fontSize16 {
   font-size: 16px;
 }
@@ -1184,17 +1189,77 @@ img {
 }
 
 /* 二维码转换 */
+
+.flex {
+  display: flex;
+}
+
+.pd5 {
+  padding: 5px;
+}
+
+.pd10 {
+  padding: 10px;
+}
+
 .wrap-grid {
   display: grid;
   grid-template-columns: 260px 1fr;
 }
 
 .subitem-bg {
-  background-color: #f2f2f2;
-  padding: 10px;
-  border: 1px solid #bebebe;
+  background-color: #f2f2f2 !important;
+  border: 1px solid #bebebe !important;
+}
+
+.colorbox {
+  width: 24px;
+  height: 24px;
+  border: 1px solid #ccc;
+  display: inline-block;
 }
 
 .colorbox-shadow {
   box-shadow: rgb(155 155 155 / 50%) 1px 2px 3px;
+}
+
+.content-bg {
+  background-color: #f5f5ff !important;
+}
+
+.menu-item-bg {
+  background-color: #f8f8f8 !important;
+}
+
+.c-red {
+  color: red;
+}
+
+.index20 {
+  z-index: 20;
+}
+
+.qrcode-btn {
+  color: #ffffff !important;
+  background-color: #2196e3 !important;
+  border: #2196e3 !important;
+  border-radius: 5;
+}
+
+.qrcode-btn-p {
+  padding-left: 10;
+  padding-top: 2;
+}
+
+.qrcode-box {
+  border: 1px solid #2196e3 !important;
+  background-color: #f2f8fd !important;
+}
+
+.text-c {
+  text-align: center;
+}
+
+.position-a {
+  position: absolute;
 }
