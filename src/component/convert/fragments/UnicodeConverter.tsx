@@ -1,15 +1,17 @@
 import TextArea from 'antd/lib/input/TextArea';
 import React, { useEffect, useRef, useState } from 'react';
-import { Checkbox, Typography, Button, notification } from 'antd';
-import { SmileOutlined } from '@ant-design/icons';
+import { Checkbox, Typography, notification, Row, Col } from 'antd';
+import { SmileOutlined, CopyTwoTone, DeleteTwoTone } from '@ant-design/icons';
 import {
   base64ToString,
   decimalToString,
   decNumberToHTMLNameCode,
+  GBCodeToString,
   htmlCodeToString,
   htmlNameCodeToDecString,
   stringToBase64,
   stringToDecimal,
+  stringToGBEncode,
   stringToHTMLCode,
   stringToUnicode,
   stringToURLCode,
@@ -22,6 +24,7 @@ import {
   utf32ToString,
   uTF8ToString,
 } from './helper/UnicodeHelper';
+import iconv from 'iconv-lite';
 
 const { Title } = Typography;
 
@@ -37,6 +40,9 @@ enum InputType {
   DEC = 'Decimal',
   HC = 'Html Code',
   HN = 'Html Name Code',
+  GB4 = 'GB2312',
+  GBK = 'GBK',
+  GB5 = 'GB18130',
 }
 
 export default function UnicodeConverter() {
@@ -57,6 +63,9 @@ export default function UnicodeConverter() {
   let decimalText = '';
   let htmlCodeText = '';
   let htmlNameCodeText = '';
+  let gb2312CodeText = '';
+  let gbkCodeText = '';
+  let gb18130CodeText = '';
 
   switch (inputTypeRef.current) {
     case InputType.UC:
@@ -86,6 +95,11 @@ export default function UnicodeConverter() {
     case InputType.HN:
       htmlNameCodeConverter();
       break;
+    case InputType.GB4:
+    case InputType.GBK:
+    case InputType.GB5:
+      gbCodeConverter();
+      break;
     default:
       commonTextConvert();
       break;
@@ -102,6 +116,9 @@ export default function UnicodeConverter() {
     decimalText = stringToDecimal(commonText);
     htmlCodeText = stringToHTMLCode(commonText);
     htmlNameCodeText = decNumberToHTMLNameCode(decimalText);
+    gb2312CodeText = stringToGBEncode(commonText, 'GB2312');
+    gbkCodeText = stringToGBEncode(commonText, 'GBK');
+    gb18130CodeText = stringToGBEncode(commonText, 'GB18030');
   }
 
   function utf8Converter() {
@@ -115,6 +132,9 @@ export default function UnicodeConverter() {
     decimalText = stringToDecimal(commonText);
     htmlCodeText = stringToHTMLCode(commonText);
     htmlNameCodeText = decNumberToHTMLNameCode(decimalText);
+    gb2312CodeText = stringToGBEncode(commonText, 'GB2312');
+    gbkCodeText = stringToGBEncode(commonText, 'GBK');
+    gb18130CodeText = stringToGBEncode(commonText, 'GB18030');
   }
 
   function utf16Converter() {
@@ -128,6 +148,9 @@ export default function UnicodeConverter() {
     decimalText = stringToDecimal(commonText);
     htmlCodeText = stringToHTMLCode(commonText);
     htmlNameCodeText = decNumberToHTMLNameCode(decimalText);
+    gb2312CodeText = stringToGBEncode(commonText, 'GB2312');
+    gbkCodeText = stringToGBEncode(commonText, 'GBK');
+    gb18130CodeText = stringToGBEncode(commonText, 'GB18030');
   }
 
   function utf32Converter() {
@@ -141,6 +164,9 @@ export default function UnicodeConverter() {
     decimalText = stringToDecimal(commonText);
     htmlCodeText = stringToHTMLCode(commonText);
     htmlNameCodeText = decNumberToHTMLNameCode(decimalText);
+    gb2312CodeText = stringToGBEncode(commonText, 'GB2312');
+    gbkCodeText = stringToGBEncode(commonText, 'GBK');
+    gb18130CodeText = stringToGBEncode(commonText, 'GB18030');
   }
 
   function base64Converter() {
@@ -154,6 +180,9 @@ export default function UnicodeConverter() {
     decimalText = stringToDecimal(commonText);
     htmlCodeText = stringToHTMLCode(commonText);
     htmlNameCodeText = decNumberToHTMLNameCode(decimalText);
+    gb2312CodeText = stringToGBEncode(commonText, 'GB2312');
+    gbkCodeText = stringToGBEncode(commonText, 'GBK');
+    gb18130CodeText = stringToGBEncode(commonText, 'GB18030');
   }
 
   function urlConverter() {
@@ -167,6 +196,9 @@ export default function UnicodeConverter() {
     decimalText = stringToDecimal(commonText);
     htmlCodeText = stringToHTMLCode(commonText);
     htmlNameCodeText = decNumberToHTMLNameCode(decimalText);
+    gb2312CodeText = stringToGBEncode(commonText, 'GB2312');
+    gbkCodeText = stringToGBEncode(commonText, 'GBK');
+    gb18130CodeText = stringToGBEncode(commonText, 'GB18030');
   }
 
   function decConverter() {
@@ -180,6 +212,9 @@ export default function UnicodeConverter() {
     urlText = stringToURLCode(commonText);
     htmlCodeText = stringToHTMLCode(commonText);
     htmlNameCodeText = decNumberToHTMLNameCode(inputValue);
+    gb2312CodeText = stringToGBEncode(commonText, 'GB2312');
+    gbkCodeText = stringToGBEncode(commonText, 'GBK');
+    gb18130CodeText = stringToGBEncode(commonText, 'GB18030');
   }
 
   function htmlCodeConverter() {
@@ -193,6 +228,9 @@ export default function UnicodeConverter() {
     urlText = stringToURLCode(commonText);
     decimalText = stringToDecimal(commonText);
     htmlNameCodeText = decNumberToHTMLNameCode(decimalText);
+    gb2312CodeText = stringToGBEncode(commonText, 'GB2312');
+    gbkCodeText = stringToGBEncode(commonText, 'GBK');
+    gb18130CodeText = stringToGBEncode(commonText, 'GB18030');
   }
 
   function htmlNameCodeConverter() {
@@ -206,6 +244,47 @@ export default function UnicodeConverter() {
     base64Text = stringToBase64(commonText);
     urlText = stringToURLCode(commonText);
     htmlCodeText = stringToHTMLCode(commonText);
+    gb2312CodeText = stringToGBEncode(commonText, 'GB2312');
+    gbkCodeText = stringToGBEncode(commonText, 'GBK');
+    gb18130CodeText = stringToGBEncode(commonText, 'GB18030');
+  }
+
+  function gbCodeConverter() {
+    switch (inputTypeRef.current) {
+      case InputType.GB4:
+        {
+          gb2312CodeText = inputValue;
+          commonText = GBCodeToString(inputValue, 'GB2312');
+          gbkCodeText = stringToGBEncode(commonText, 'GBK');
+          gb18130CodeText = stringToGBEncode(commonText, 'GB18030');
+        }
+        break;
+      case InputType.GBK:
+        {
+          gbkCodeText = inputValue;
+          commonText = GBCodeToString(inputValue, 'GBK');
+          gb2312CodeText = stringToGBEncode(commonText, 'GB2312');
+          gb18130CodeText = stringToGBEncode(commonText, 'GB18030');
+        }
+        break;
+      case InputType.GB5:
+        {
+          gb18130CodeText = inputValue;
+          commonText = GBCodeToString(inputValue, 'GB18030');
+          gb2312CodeText = stringToGBEncode(commonText, 'GB2312');
+          gbkCodeText = stringToGBEncode(commonText, 'GBK');
+        }
+        break;
+    }
+    unicodeText = stringToUnicode(commonText);
+    utf8HexText = stringToUTF8(commonText, u8RemoveFlag.current);
+    utf16Text = stringToUTF16(commonText, u16RemoveFlag.current);
+    utf32Text = stringToUTF32(commonText, u32RemoveFlag.current);
+    base64Text = stringToBase64(commonText);
+    urlText = stringToURLCode(commonText);
+    decimalText = stringToDecimal(commonText);
+    htmlCodeText = stringToHTMLCode(commonText);
+    htmlNameCodeText = decNumberToHTMLNameCode(decimalText);
   }
 
   function commonTextConvert() {
@@ -219,6 +298,9 @@ export default function UnicodeConverter() {
     decimalText = stringToDecimal(inputValue);
     htmlCodeText = stringToHTMLCode(inputValue);
     htmlNameCodeText = decNumberToHTMLNameCode(decimalText);
+    gb2312CodeText = stringToGBEncode(inputValue, 'GB2312');
+    gbkCodeText = stringToGBEncode(inputValue, 'GBK');
+    gb18130CodeText = stringToGBEncode(inputValue, 'GB18030');
   }
 
   function onCommonTextChangedHandler(data: string, type: InputType) {
@@ -269,76 +351,92 @@ export default function UnicodeConverter() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'auto' }}>
-      <CustomTextArea title='Text ( Example: र Ю" )' data={commonText} type={InputType.C} onTextAreaChanged={onCommonTextChangedHandler} />
-      <CustomTextArea
-        title="Unicode ( Example: u+930u+20u+42eu+22 )"
-        data={unicodeText}
-        type={InputType.UC}
-        ristrict={/[^a-fA-F0-9u+]/g}
-        key={refresh}
-        onTextAreaChanged={onCommonTextChangedHandler}
-      />
-      <CustomTextArea
-        title="UTF-8 ( Example: \xe0\xa4\xb0\x20\xd0\xae\x22 )"
-        showCheckbox={true}
-        checkboxLabel="Remove notation ( \x )"
-        data={utf8HexText}
-        type={InputType.U8H}
-        ristrict={/[^a-fA-F0-9x\\]/g}
-        onTextAreaChanged={onCommonTextChangedHandler}
-        onCheckboxChanged={onCheckboxChangedHandler}
-      />
-      <CustomTextArea
-        title="UTF-16 ( Example: \u0930\u0020\u042e\u0022 )"
-        showCheckbox={true}
-        checkboxLabel="Remove notation ( \u )"
-        data={utf16Text}
-        type={InputType.U16}
-        ristrict={/[^a-fA-F0-9u\\]/g}
-        onTextAreaChanged={onCommonTextChangedHandler}
-        onCheckboxChanged={onCheckboxChangedHandler}
-      />
-      <CustomTextArea
-        title="UTF-32 ( Example: u+00000930u+00000020u+0000042eu+00000022 )"
-        showCheckbox={true}
-        checkboxLabel="Remove notation ( u+ )"
-        data={utf32Text}
-        type={InputType.U32}
-        ristrict={/[^a-fA-F0-9u+]/g}
-        onTextAreaChanged={onCommonTextChangedHandler}
-        onCheckboxChanged={onCheckboxChangedHandler}
-      />
-      <CustomTextArea
-        title="Base64 ( Example: 4KSwINCuIg== )"
-        data={base64Text}
-        type={InputType.B64}
-        onTextAreaChanged={onCommonTextChangedHandler}
-      />
-      <CustomTextArea
-        title="URL(%) ( Example: %E0%A4%B0%20%D0%AE%22 )"
-        data={urlText}
-        type={InputType.URL}
-        onTextAreaChanged={onCommonTextChangedHandler}
-      />
-      <CustomTextArea
-        title="Decimal ( Example: 2352 32 1070 34 )"
-        data={decimalText}
-        type={InputType.DEC}
-        ristrict={/[^0-9\s]/g}
-        onTextAreaChanged={onCommonTextChangedHandler}
-      />
-      <CustomTextArea
-        title="HTML Code ( Example: &#x26;#2352;&#x26;#32;&#x26;#1070;&#x26;#34; )"
-        data={htmlCodeText}
-        type={InputType.HC}
-        onTextAreaChanged={onCommonTextChangedHandler}
-      />
-      <CustomTextArea
-        title="Html Name Code ( Example: &#x26;quot; )"
-        data={htmlNameCodeText}
-        type={InputType.HN}
-        onTextAreaChanged={onCommonTextChangedHandler}
-      />
+      <Row
+        gutter={[
+          { xxl: 32, lg: 24 },
+          { xxl: 32, lg: 24 },
+        ]}
+      >
+        <Col xxl={8} lg={12}>
+          <CustomTextArea title="Text ( Example: र Ю )" data={commonText} type={InputType.C} onTextAreaChanged={onCommonTextChangedHandler} />
+        </Col>
+        <Col xxl={8} lg={12}>
+          <CustomTextArea
+            title="Unicode"
+            data={unicodeText}
+            type={InputType.UC}
+            ristrict={/[^a-fA-F0-9u+]/g}
+            key={refresh}
+            onTextAreaChanged={onCommonTextChangedHandler}
+          />
+        </Col>
+        <Col xxl={8} lg={12} className="gutter-row">
+          <CustomTextArea
+            title="UTF-8"
+            showCheckbox={true}
+            checkboxLabel="Remove notation ( \x )"
+            data={utf8HexText}
+            type={InputType.U8H}
+            ristrict={/[^a-fA-F0-9x\\]/g}
+            onTextAreaChanged={onCommonTextChangedHandler}
+            onCheckboxChanged={onCheckboxChangedHandler}
+          />
+        </Col>
+        <Col xxl={8} lg={12}>
+          <CustomTextArea
+            title="UTF-16"
+            showCheckbox={true}
+            checkboxLabel="Remove notation ( \u )"
+            data={utf16Text}
+            type={InputType.U16}
+            ristrict={/[^a-fA-F0-9u\\]/g}
+            onTextAreaChanged={onCommonTextChangedHandler}
+            onCheckboxChanged={onCheckboxChangedHandler}
+          />
+        </Col>
+        <Col xxl={8} lg={12}>
+          <CustomTextArea
+            title="UTF-32"
+            showCheckbox={true}
+            checkboxLabel="Remove notation ( u+ )"
+            data={utf32Text}
+            type={InputType.U32}
+            ristrict={/[^a-fA-F0-9u+]/g}
+            onTextAreaChanged={onCommonTextChangedHandler}
+            onCheckboxChanged={onCheckboxChangedHandler}
+          />
+        </Col>
+        {/* <Col xxl={8} lg={12}>
+          <CustomTextArea title="Base64" data={base64Text} type={InputType.B64} onTextAreaChanged={onCommonTextChangedHandler} />
+        </Col> */}
+        <Col xxl={8} lg={12}>
+          <CustomTextArea title="URL(%)" data={urlText} type={InputType.URL} onTextAreaChanged={onCommonTextChangedHandler} />
+        </Col>
+        <Col xxl={8} lg={12}>
+          <CustomTextArea
+            title="Decimal"
+            data={decimalText}
+            type={InputType.DEC}
+            ristrict={/[^0-9\s]/g}
+            onTextAreaChanged={onCommonTextChangedHandler}
+          />
+        </Col>
+        <Col xxl={8} lg={12}>
+          <CustomTextArea title="HTML Code" data={htmlCodeText} type={InputType.HC} onTextAreaChanged={onCommonTextChangedHandler} />
+        </Col>
+        <Col xxl={8} lg={12}>
+          <CustomTextArea title="Html Name Code" data={htmlNameCodeText} type={InputType.HN} onTextAreaChanged={onCommonTextChangedHandler} />
+        </Col>
+        <Col xxl={8} lg={12}>
+          <CustomTextArea title="GB2312" data={gb2312CodeText} type={InputType.GB4} onTextAreaChanged={onCommonTextChangedHandler} />
+        </Col>
+        <Col xxl={8} lg={12}>
+          <CustomTextArea title="GBK" data={gbkCodeText} type={InputType.GBK} onTextAreaChanged={onCommonTextChangedHandler} />
+        </Col>
+        <Col xxl={8} lg={12}>
+          <CustomTextArea title="GB18130" data={gb18130CodeText} type={InputType.GB5} onTextAreaChanged={onCommonTextChangedHandler} />
+        </Col>
+      </Row>
     </div>
   );
 }
@@ -346,6 +444,7 @@ export default function UnicodeConverter() {
 interface CustomTextAreaProps {
   data: string;
   type: InputType;
+  rows?: number;
   title: string;
   checkboxLabel?: string;
   showCheckbox?: boolean;
@@ -356,10 +455,11 @@ interface CustomTextAreaProps {
 
 function CustomTextArea(props: CustomTextAreaProps) {
   const [value, setValue] = useState(props.data);
+  const [showIcon, setShowIcon] = useState(false);
 
   const [api, contextHolder] = notification.useNotification();
 
-  const { title = '', checkboxLabel = '', showCheckbox = false, type } = props;
+  const { title = '', checkboxLabel = '', showCheckbox = false, type, rows = 3 } = props;
 
   let placeholderText = '在这里输入字符';
 
@@ -391,6 +491,14 @@ function CustomTextArea(props: CustomTextAreaProps) {
   function onTextAreaBlurHandler(event) {
     if (event.target.value !== props.data || !event.target.value) {
       props.onTextAreaChanged(event.target.value, props.type);
+    }
+  }
+
+  function onTextAreaHoverHandler(type: string) {
+    if (type === 'in') {
+      setShowIcon(true);
+    } else {
+      setShowIcon(false);
     }
   }
 
@@ -430,14 +538,14 @@ function CustomTextArea(props: CustomTextAreaProps) {
         <Title level={5}>{title}</Title>
         {showCheckbox && <Checkbox onChange={onChange}>{checkboxLabel}</Checkbox>}
       </div>
-      <TextArea value={value} onChange={onTextAreaChangeHandler} onBlur={onTextAreaBlurHandler} placeholder={placeholderText} />
-      <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginTop: '5px' }}>
-        <Button type="primary" shape="round" size="small" onClick={onCopyBtnClickHandler}>
-          copy
-        </Button>
-        <Button style={{ marginLeft: '5px' }} type="primary" shape="round" size="small" onClick={onClearBtnClickHandler}>
-          clear
-        </Button>
+      <div style={{ position: 'relative' }} onMouseEnter={() => onTextAreaHoverHandler('in')} onMouseLeave={() => onTextAreaHoverHandler('out')}>
+        <TextArea value={value} rows={rows} onChange={onTextAreaChangeHandler} onBlur={onTextAreaBlurHandler} placeholder={placeholderText} />
+        {showIcon && (
+          <div style={{ position: 'absolute', top: 5, right: 5, backgroundColor: 'white' }}>
+            <CopyTwoTone twoToneColor="#1a8c16" onClick={onCopyBtnClickHandler} title="copy" />
+            <DeleteTwoTone twoToneColor="#1a8c16" style={{ marginLeft: '5px' }} title="clear" onClick={onClearBtnClickHandler} />
+          </div>
+        )}
       </div>
     </div>
   );
