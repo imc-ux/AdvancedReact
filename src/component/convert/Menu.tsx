@@ -19,6 +19,7 @@ export const MENU_LIST = [
     ],
   },
   { id: 7, name: '编码', parent: 0 },
+  { id: 8, name: '二维码转换', parent: 0 },
 ];
 
 export default function Menu(props: MenuProps) {
