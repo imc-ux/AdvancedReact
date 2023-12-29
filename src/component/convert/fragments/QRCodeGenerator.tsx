@@ -14,7 +14,7 @@ export default function qrCodeGenerator() {
   const [hidden, setHidden] = useState(false);
   const [bghidden, setBgHidden] = useState(false);
   const [sizeHidden, setSizeHidden] = useState(false);
-  const [chsize, setChSize] = useState(220);
+  const [chsize, setChSize] = useState<number | null>(220);
   const [menu, setMenu] = useState('link');
   const [showSpin, setShowSpin] = useState(false);
 
@@ -44,10 +44,10 @@ export default function qrCodeGenerator() {
       return;
     }
     if (menu === 'link') {
-      if (chsize < 0) {
+      if (chsize < 0 || chsize == 0) {
         setShowQRcode(text);
         message.error('The size cannot be minus！');
-      } else if (chsize > 0 && chsize <= 30) {
+      } else if (chsize > 0 && chsize <= 50) {
         setShowQRcode(text);
         message.warning('Generate QR code size is too small.You need modify a more appropriate value!');
       } else {
@@ -90,14 +90,14 @@ export default function qrCodeGenerator() {
     setBgHidden(false);
   }
 
-  function onSizeChangeHandler(e) {
+  function onSizeChangeHandler(size: React.ChangeEvent<HTMLInputElement>) {
     setShowQRcode('');
-    setChSize(e.target.value);
-    if (e.target.value === '') {
+    const newSize = size.target.value === '' ? 220 : parseInt(size.target.value, 10);
+    setChSize(newSize);
+    if (size.target.value === '') {
       setChSize(220);
-      setShowQRcode('');//input type为数字时 监听值的类型是什么
+      setShowQRcode('');
     }
-    console.log('sizechange->', e.target.value, chsize);
   }
 
   function onSelectChangeHandler(value: number) {
@@ -109,7 +109,7 @@ export default function qrCodeGenerator() {
     htmlToImage.toSvg(svgElement);
   }
 
-  function onDownloadQRCodeImageHandler(type) {
+  function onDownloadQRCodeImageHandler(type: string) {
     if (!showQRcode) {
       message.error('Generate QR code first.');
       return;
@@ -131,13 +131,13 @@ export default function qrCodeGenerator() {
         return;
       }
       downloadFunc(qrcodeImage)
-        .then((dataUrl) => {
+        .then((dataUrl: string) => {
           const link = document.createElement('a');
           link.href = dataUrl;
           link.download = `qrcode.${extension}`;
           link.click();
         })
-        .catch((error) => {
+        .catch((error: string) => {
           console.error('Error gernerating ${extension}:', error);
         });
     }
@@ -224,6 +224,7 @@ export default function qrCodeGenerator() {
                 ]}
               ></Select>
             </div>
+            <div className="fontSize12 pd5">当前的size值是: {chsize}</div>
           </div>
         )}
         <div className="div-flex h-center v-middle qrcode-box" style={{ width: chsize + 20, height: chsize + 20 }}>
