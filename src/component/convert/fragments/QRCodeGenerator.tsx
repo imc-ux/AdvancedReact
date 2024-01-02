@@ -181,8 +181,10 @@ export default function qrCodeGenerator() {
         </Button>
         <Button onClick={() => setHidden(!hidden)}>Choose qrcode Color</Button>
         <div className="flex">
-          <label>current fgcolor</label>
-          <div className="colorbox colorbox-shadow pd5" style={{ backgroundColor: fgColor }}></div>
+          <div className="flex pd5">
+            <label>current fgcolor:　</label>
+            <div className="colorbox colorbox-shadow pd5" style={{ backgroundColor: fgColor }}></div>
+          </div>
           {hidden && (
             <div className="subitem-bg position-a index20 pd10">
               <SketchPicker color={fgColor} onChange={onColorChangeHandler} display={hidden ? 'block' : 'none'}></SketchPicker>
@@ -191,8 +193,10 @@ export default function qrCodeGenerator() {
         </div>
         <Button onClick={() => setBgHidden(!bghidden)}>Choose qrcode bg Color</Button>
         <div className="flex">
-          <label>current bgcolor</label>
-          <div className="colorbox colorbox-shadow pd5" style={{ backgroundColor: bgColor }}></div>
+          <div className="flex pd5">
+            <label>current bgcolor:　</label>
+            <div className="colorbox colorbox-shadow pd5" style={{ backgroundColor: bgColor }}></div>
+          </div>
           {bghidden && (
             <div className="subitem-bg position-a index20 pd10">
               <SketchPicker color={bgColor} onChange={onBGColorChangeHandler} display={bghidden ? 'block' : 'none'}></SketchPicker>
@@ -227,7 +231,7 @@ export default function qrCodeGenerator() {
             <div className="fontSize12 pd5">当前的size值是: {chsize}</div>
           </div>
         )}
-        <div className="div-flex h-center v-middle qrcode-box" style={{ width: chsize + 20, height: chsize + 20 }}>
+        <div className="div-flex h-center v-middle qrcode-box margin-t10" style={{ width: chsize + 20, height: chsize + 20 }}>
           {showSpin && <Spin indicator={antIcon} />}
           {showQRcode && (
             <QRCodeSVG
