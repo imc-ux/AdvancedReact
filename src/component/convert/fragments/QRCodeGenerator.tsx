@@ -6,19 +6,18 @@ import { SketchPicker } from 'react-color';
 import * as htmlToImage from 'html-to-image';
 
 export default function qrCodeGenerator() {
-  const [text, setText] = useState('');
-  const [areaText, setAreaText] = useState('');
+  const [inputValue, setInputValue] = useState('');
+  const [textAreaValue, setTextArea] = useState('');
   const [fgColor, setFgColor] = useState('#000000');
   const [bgColor, setBgColor] = useState('#FFF');
   const [showQRcode, setShowQRcode] = useState('');
   const [hidden, setHidden] = useState(false);
   const [bghidden, setBgHidden] = useState(false);
   const [sizeHidden, setSizeHidden] = useState(false);
-  const [chsize, setChSize] = useState(220);
+  const [chsize, setChSize] = useState<number | null>(220);
   const [menu, setMenu] = useState('link');
   const [showSpin, setShowSpin] = useState(false);
 
-  const { TextArea } = Input;
   const defaultValue = 220;
 
   useEffect(() => {
@@ -31,37 +30,50 @@ export default function qrCodeGenerator() {
 
   function handleConvert() {
     setShowSpin(true);
-    if (menu === 'link' && text.trim() === '') {
-      message.error('请在URL框输入转换内容！');
-      setShowQRcode('');
-      setShowSpin(false);
+
+    function handleInputValue(value: string, errorMessage: string) {
+      if (value.trim() === '' || parseFloat(value) < 0) {
+        if (value.trim() === '') {
+          message.error(errorMessage);
+        } else {
+          message.error('The value cannot be minus！');
+        }
+        setShowQRcode('');
+        setShowSpin(false);
+        return true;
+      }
+      return false;
+    }
+
+    if (menu === 'link' && handleInputValue(inputValue, '请在URL框输入转换内容！')) {
       return;
     }
-    if (menu === 'text' && areaText.trim() === '') {
-      message.error('请在Message框输入转换内容！');
-      setShowQRcode('');
-      setShowSpin(false);
+    if (menu === 'text' && handleInputValue(textAreaValue, '请在Message框输入转换内容！')) {
       return;
     }
-    if (menu === 'link') {
-      if (chsize < 0) {
-        setShowQRcode(text);
+
+    function QRCodeSizeHandler(value: string) {
+      if (chsize < 0 || chsize == 0) {
+        setShowQRcode(value);
         message.error('The size cannot be minus！');
-      } else if (chsize > 0 && chsize <= 30) {
-        setShowQRcode(text);
+      } else if (chsize > 0 && chsize <= 50) {
+        setShowQRcode(value);
         message.warning('Generate QR code size is too small.You need modify a more appropriate value!');
       } else {
-        setShowQRcode(text);
+        setShowQRcode(value);
       }
       setHidden(false);
       setBgHidden(false);
       setShowSpin(false);
     }
+
+    if (menu === 'link') {
+      QRCodeSizeHandler(inputValue);
+      return;
+    }
     if (menu === 'text') {
-      setShowQRcode(areaText);
-      setHidden(false);
-      setBgHidden(false);
-      setShowSpin(false);
+      QRCodeSizeHandler(textAreaValue);
+      return;
     }
   }
 
@@ -75,14 +87,6 @@ export default function qrCodeGenerator() {
     setBgHidden(false);
   }
 
-  function onTextAreaValueChangeHandler(textareaValue: React.ChangeEvent<HTMLTextAreaElement>) {
-    setAreaText(textareaValue.target.value);
-  }
-
-  function onInputValueChangeHandler(linkValue: React.ChangeEvent<HTMLInputElement>) {
-    setText(linkValue.target.value);
-  }
-
   function onMenuItemClickHandler(menuItem: { key: string }) {
     setMenu(menuItem.key);
     setShowQRcode('');
@@ -90,14 +94,14 @@ export default function qrCodeGenerator() {
     setBgHidden(false);
   }
 
-  function onSizeChangeHandler(e) {
+  function onSizeChangeHandler(size: React.ChangeEvent<HTMLInputElement>) {
     setShowQRcode('');
-    setChSize(e.target.value);
-    if (e.target.value === '') {
+    const newSize = size.target.value === '' ? 220 : parseInt(size.target.value, 10);
+    setChSize(newSize);
+    if (size.target.value === '') {
       setChSize(220);
-      setShowQRcode('');//input type为数字时 监听值的类型是什么
+      setShowQRcode('');
     }
-    console.log('sizechange->', e.target.value, chsize);
   }
 
   function onSelectChangeHandler(value: number) {
@@ -109,7 +113,7 @@ export default function qrCodeGenerator() {
     htmlToImage.toSvg(svgElement);
   }
 
-  function onDownloadQRCodeImageHandler(type) {
+  function onDownloadQRCodeImageHandler(downloadType: string) {
     if (!showQRcode) {
       message.error('Generate QR code first.');
       return;
@@ -120,10 +124,10 @@ export default function qrCodeGenerator() {
       let downloadFunc: any;
       let extension: string;
 
-      if (type === 'svg') {
+      if (downloadType === 'svg') {
         downloadFunc = htmlToImage.toSvg;
         extension = 'svg';
-      } else if (type === 'png') {
+      } else if (downloadType === 'png') {
         downloadFunc = htmlToImage.toPng;
         extension = 'png';
       } else {
@@ -131,15 +135,23 @@ export default function qrCodeGenerator() {
         return;
       }
       downloadFunc(qrcodeImage)
-        .then((dataUrl) => {
+        .then((dataUrl: string) => {
           const link = document.createElement('a');
           link.href = dataUrl;
           link.download = `qrcode.${extension}`;
           link.click();
         })
-        .catch((error) => {
+        .catch((error: string) => {
           console.error('Error gernerating ${extension}:', error);
         });
+    }
+  }
+
+  function onConverterChangeHandler(content: ComponentProps) {
+    if (content.type === 'link') {
+      setInputValue(content.value);
+    } else if (content.type === 'text') {
+      setTextArea(content.value);
     }
   }
 
@@ -158,31 +170,16 @@ export default function qrCodeGenerator() {
         </Menu>
       </div>
       <div>
-        {menu === 'link' && (
-          <div className="content-bg">
-            <h2>Link</h2>
-            <div className="margin-b10">
-              <label>URL</label>
-              <Input placeholder="type a http://" value={text} allowClear onChange={onInputValueChangeHandler} />
-            </div>
-          </div>
-        )}
-        {menu === 'text' && (
-          <div className="content-bg">
-            <h2>Text</h2>
-            <div className="margin-b10">
-              <label>Message</label>
-              <TextArea placeholder="type some messages" value={areaText} allowClear onChange={onTextAreaValueChangeHandler} />
-            </div>
-          </div>
-        )}
+        <Converter show={menu} text={inputValue} areaText={textAreaValue} onBlur={onConverterChangeHandler} />
         <Button className="timestamp-button margin-b10 qrcode-btn qrcode-btn-p" onClick={handleConvert}>
           generate your new qrcode
         </Button>
         <Button onClick={() => setHidden(!hidden)}>Choose qrcode Color</Button>
         <div className="flex">
-          <label>current fgcolor</label>
-          <div className="colorbox colorbox-shadow pd5" style={{ backgroundColor: fgColor }}></div>
+          <div className="flex pd5">
+            <label>current fgcolor:　</label>
+            <div className="colorbox colorbox-shadow pd5" style={{ backgroundColor: fgColor }}></div>
+          </div>
           {hidden && (
             <div className="subitem-bg position-a index20 pd10">
               <SketchPicker color={fgColor} onChange={onColorChangeHandler} display={hidden ? 'block' : 'none'}></SketchPicker>
@@ -191,8 +188,10 @@ export default function qrCodeGenerator() {
         </div>
         <Button onClick={() => setBgHidden(!bghidden)}>Choose qrcode bg Color</Button>
         <div className="flex">
-          <label>current bgcolor</label>
-          <div className="colorbox colorbox-shadow pd5" style={{ backgroundColor: bgColor }}></div>
+          <div className="flex pd5">
+            <label>current bgcolor:　</label>
+            <div className="colorbox colorbox-shadow pd5" style={{ backgroundColor: bgColor }}></div>
+          </div>
           {bghidden && (
             <div className="subitem-bg position-a index20 pd10">
               <SketchPicker color={bgColor} onChange={onBGColorChangeHandler} display={bghidden ? 'block' : 'none'}></SketchPicker>
@@ -224,9 +223,10 @@ export default function qrCodeGenerator() {
                 ]}
               ></Select>
             </div>
+            <div className="fontSize12 pd5">当前的size值是: {chsize}</div>
           </div>
         )}
-        <div className="div-flex h-center v-middle qrcode-box" style={{ width: chsize + 20, height: chsize + 20 }}>
+        <div className="div-flex h-center v-middle qrcode-box margin-t10" style={{ width: chsize + 20, height: chsize + 20 }}>
           {showSpin && <Spin indicator={antIcon} />}
           {showQRcode && (
             <QRCodeSVG
@@ -248,8 +248,7 @@ export default function qrCodeGenerator() {
         </div>
         <div>
           <Button
-            className="qrcode-btn"
-            style={{ marginRight: 8, marginTop: 8 }}
+            className="qrcode-btn margin-t5 margin-r5"
             value={'svg'}
             onClick={() => {
               onDownloadQRCodeImageHandler('svg');
@@ -258,7 +257,7 @@ export default function qrCodeGenerator() {
             Download SVG
           </Button>
           <Button
-            className="qrcode-btn"
+            className="qrcode-btn margin-t5"
             value={'png'}
             onClick={() => {
               onDownloadQRCodeImageHandler('png');
@@ -270,4 +269,76 @@ export default function qrCodeGenerator() {
       </div>
     </div>
   );
+}
+
+interface ConverterProps {
+  show: string;
+  text: string;
+  areaText: string;
+  onBlur: (v: any) => void;
+}
+
+interface ComponentProps {
+  text?: string;
+  areaText?: string;
+  value: string;
+  type: string;
+}
+
+function Converter(props: ConverterProps) {
+  const { TextArea } = Input;
+
+  const [text, setText] = useState('');
+  const [areaText, setAreaText] = useState('');
+  const [type, setType] = useState<string>(props.show);
+
+  useEffect(() => {
+    setType(props.show);
+  }, [props.show]);
+
+  function onInputValueChangeHandler(linkValue: React.ChangeEvent<HTMLInputElement>) {
+    setText(linkValue.target.value);
+  }
+
+  function onTextAreaValueChangeHandler(textareaValue: React.ChangeEvent<HTMLTextAreaElement>) {
+    setAreaText(textareaValue.target.value);
+  }
+
+  function onInputBlurHandler() {
+    const inputValue: ComponentProps = { value: text, type: 'link' };
+    props?.onBlur(inputValue);
+  }
+
+  function onTextAreaBlurHandler() {
+    const textareaValue: ComponentProps = { value: areaText, type: 'text' };
+    props?.onBlur(textareaValue);
+  }
+
+  if (type === 'link') {
+    return (
+      <div className="content-bg">
+        <h2>Link</h2>
+        <div className="margin-b10">
+          <label>URL</label>
+          <Input placeholder="type a http://" value={text} allowClear onBlur={onInputBlurHandler} onChange={onInputValueChangeHandler} />
+        </div>
+      </div>
+    );
+  } else if (type === 'text') {
+    return (
+      <div className="content-bg">
+        <h2>Text</h2>
+        <div className="margin-b10">
+          <label>Message</label>
+          <TextArea
+            placeholder="type some messages"
+            value={areaText}
+            allowClear
+            onBlur={onTextAreaBlurHandler}
+            onChange={onTextAreaValueChangeHandler}
+          />
+        </div>
+      </div>
+    );
+  }
 }
