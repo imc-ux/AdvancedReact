@@ -275,7 +275,7 @@ interface ConverterProps {
   show: string;
   text: string;
   areaText: string;
-  onBlur: (v: any) => void;
+  onBlur: (v: ComponentProps) => void;
 }
 
 interface ComponentProps {
