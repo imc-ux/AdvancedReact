@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import QRCodeSVG from 'qrcode.react';
 import { LinkOutlined, AlignLeftOutlined, LoadingOutlined } from '@ant-design/icons';
-import { Input, Button, message, Menu, Spin, Select } from 'antd';
+import { Input, Button, message, Menu, Spin, Select, Image } from 'antd';
 import { SketchPicker } from 'react-color';
 import * as htmlToImage from 'html-to-image';
+import defaultQRCode from '../../../../static/images/default_qrcode.png';
 
 export default function qrCodeGenerator() {
   const [inputValue, setInputValue] = useState('');
@@ -228,6 +229,7 @@ export default function qrCodeGenerator() {
         )}
         <div className="div-flex h-center v-middle qrcode-box margin-t10" style={{ width: chsize + 20, height: chsize + 20 }}>
           {showSpin && <Spin indicator={antIcon} />}
+          {showQRcode === '' && <Image src={defaultQRCode} preview={false} />}
           {showQRcode && (
             <QRCodeSVG
               className="pd10"
