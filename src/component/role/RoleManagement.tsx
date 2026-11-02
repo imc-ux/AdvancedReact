@@ -21,11 +21,13 @@ export default function RoleManagement() {
     setDropValue(value);
     setBlock('none');
     setRoleValue(d => ++d);
+    
+    
   }
 
   function onDropCallbackHandler(state: string) {
     setBlock(state);
-    console.log('state', state);
+    
   }
 
   function onDataChangedHandler() {

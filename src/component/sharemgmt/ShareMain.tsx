@@ -102,6 +102,7 @@ export default function Share() {
       if (PermissionData?.data?.includes('F_C')) {
         setShowTopBtn(true);
       }
+      if ()
     } catch (e) {
       alert(e);
     }
